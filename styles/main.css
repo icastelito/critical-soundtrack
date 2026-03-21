@@ -177,7 +177,25 @@
 	padding: 4px 16px;
 }
 
-/* ── Botão na ficha do personagem ───────────────────────── */
+/* ── Botão na ficha do personagem (V1 e V2) ─────────────── */
 .window-app .header-button.critical-soundtrack-config-btn {
 	color: var(--color-text-hyperlink, #4a7c59);
+}
+
+/* AppV2 (Foundry v13): botão injetado via renderActorSheet */
+.window-header .critical-soundtrack-config-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	cursor: pointer;
+	background: none;
+	border: none;
+	color: var(--color-text-hyperlink, #4a7c59);
+	font-size: 0.85rem;
+	padding: 0 6px;
+	line-height: 1;
+}
+
+.window-header .critical-soundtrack-config-btn:hover {
+	text-shadow: 0 0 6px var(--color-text-hyperlink, #4a7c59);
 }

@@ -56,15 +56,8 @@ function getActorConfig(actor) {
 	);
 }
 
-// Compatibilidade v11/v12
 async function playAudio(src, volume) {
-	if (foundry.audio?.AudioHelper?.play) {
-		return foundry.audio.AudioHelper.play({ src, volume, autoplay: true, loop: false });
-	}
-	if (typeof AudioHelper !== "undefined" && AudioHelper.play) {
-		return AudioHelper.play({ src, volume, autoplay: true, loop: false });
-	}
-	console.error(`${MODULE_ID} | API de áudio não encontrada.`);
+	return foundry.audio.AudioHelper.play({ src, volume, autoplay: true, loop: false });
 }
 
 async function playCriticalSoundtrack(actor) {
@@ -133,26 +126,36 @@ async function playCriticalSoundtrack(actor) {
 	}
 }
 
-class SoundtrackConfigApp extends FormApplication {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+class SoundtrackConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor(actor, options = {}) {
-		super(actor, options);
+		super(options);
 		this.actor = actor;
 		this._config = getActorConfig(actor);
 	}
 
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			id: "critical-soundtrack-config",
-			title: game.i18n.localize("CRITICAL_SOUNDTRACK.ConfigTitle"),
-			template: `modules/${MODULE_ID}/templates/soundtrack-config.hbs`,
-			width: 520,
-			height: "auto",
-			closeOnSubmit: true,
+	static DEFAULT_OPTIONS = {
+		id: "critical-soundtrack-config",
+		window: {
+			title: "CRITICAL_SOUNDTRACK.ConfigTitle",
 			resizable: true,
-		});
-	}
+		},
+		position: { width: 520 },
+		actions: {
+			addTrack: SoundtrackConfigApp._onAddTrack,
+			removeTrack: SoundtrackConfigApp._onRemoveTrack,
+			browseFile: SoundtrackConfigApp._onBrowseFile,
+			testPlay: SoundtrackConfigApp._onTestPlay,
+			save: SoundtrackConfigApp._onSave,
+		},
+	};
 
-	getData() {
+	static PARTS = {
+		form: { template: `modules/${MODULE_ID}/templates/soundtrack-config.hbs` },
+	};
+
+	async _prepareContext(options) {
 		return {
 			actorName: this.actor.name,
 			tracks: this._config.tracks.map((t, i) => ({ ...t, _index: i, _number: i + 1 })),
@@ -160,41 +163,26 @@ class SoundtrackConfigApp extends FormApplication {
 			playMode: this._config.playMode,
 			duration: this._config.duration,
 			playModes: [
-				{
-					value: "random",
-					label: game.i18n.localize("CRITICAL_SOUNDTRACK.PlayModeRandom"),
-				},
-				{
-					value: "sequential",
-					label: game.i18n.localize("CRITICAL_SOUNDTRACK.PlayModeSequential"),
-				},
+				{ value: "random", label: game.i18n.localize("CRITICAL_SOUNDTRACK.PlayModeRandom") },
+				{ value: "sequential", label: game.i18n.localize("CRITICAL_SOUNDTRACK.PlayModeSequential") },
 			],
 		};
 	}
 
-	activateListeners(html) {
-		super.activateListeners(html);
-		html.find(".cs-add-track").on("click", this._onAddTrack.bind(this));
-		html.find(".cs-remove-track").on("click", this._onRemoveTrack.bind(this));
-		html.find(".cs-browse-file").on("click", this._onBrowseFile.bind(this));
-		html.find(".cs-test-play").on("click", this._onTestPlay.bind(this));
-
-		html.find("input[type=range]").on("input", (ev) => {
-			const val = parseFloat(ev.currentTarget.value).toFixed(2);
-			$(ev.currentTarget).siblings(".cs-range-value").text(val);
+	_onRender(context, options) {
+		this.element.querySelectorAll("input[type=range]").forEach((el) => {
+			el.addEventListener("input", (ev) => {
+				const group = ev.currentTarget.closest(".cs-range-group");
+				if (group) group.querySelector(".cs-range-value").textContent = parseFloat(ev.currentTarget.value).toFixed(2);
+			});
 		});
 	}
 
 	_syncFromForm() {
-		if (!this.element?.length) return;
-		const form = this.element.find("form")[0];
+		const form = this.element.querySelector("form");
 		if (!form) return;
 		try {
-			const FDE =
-				foundry.applications?.ux?.FormDataExtended ??
-				(typeof FormDataExtended !== "undefined" ? FormDataExtended : null);
-			if (!FDE) return;
-			const data = new FDE(form).object;
+			const data = new foundry.applications.ux.FormDataExtended(form).object;
 			this._applyFormData(data);
 		} catch (e) {}
 	}
@@ -211,44 +199,35 @@ class SoundtrackConfigApp extends FormApplication {
 		}
 	}
 
-	_onAddTrack(event) {
-		event.preventDefault();
+	static _onAddTrack(event) {
 		this._syncFromForm();
 		this._config.tracks.push({ src: "", volume: 0.8, label: "" });
-		this.render(true);
+		this.render();
 	}
 
-	_onRemoveTrack(event) {
-		event.preventDefault();
+	static _onRemoveTrack(event, target) {
 		this._syncFromForm();
-		const index = parseInt(event.currentTarget.dataset.index);
-		this._config.tracks.splice(index, 1);
-		this.render(true);
+		this._config.tracks.splice(parseInt(target.dataset.index), 1);
+		this.render();
 	}
 
-	_onBrowseFile(event) {
-		event.preventDefault();
+	static _onBrowseFile(event, target) {
 		this._syncFromForm();
-		const index = parseInt(event.currentTarget.dataset.index);
-		const fp = new FilePicker({
+		const index = parseInt(target.dataset.index);
+		new FilePicker({
 			type: "audio",
 			current: this._config.tracks[index]?.src ?? "",
 			callback: (path) => {
 				this._config.tracks[index].src = path;
-				this.render(true);
+				this.render();
 			},
-		});
-		fp.browse();
+		}).browse();
 	}
 
-	async _onTestPlay(event) {
-		event.preventDefault();
+	static async _onTestPlay(event, target) {
 		this._syncFromForm();
-		const index = parseInt(event.currentTarget.dataset.index);
-		const track = this._config.tracks[index];
-		if (!track?.src) {
-			return ui.notifications.warn(game.i18n.localize("CRITICAL_SOUNDTRACK.NoTrackSelected"));
-		}
+		const track = this._config.tracks[parseInt(target.dataset.index)];
+		if (!track?.src) return ui.notifications.warn(game.i18n.localize("CRITICAL_SOUNDTRACK.NoTrackSelected"));
 		try {
 			await playAudio(track.src, track.volume ?? this._config.volume ?? 0.8);
 		} catch (err) {
@@ -256,10 +235,11 @@ class SoundtrackConfigApp extends FormApplication {
 		}
 	}
 
-	async _updateObject(event, formData) {
-		this._applyFormData(formData);
+	static async _onSave(event) {
+		this._syncFromForm();
 		await this.actor.setFlag(MODULE_ID, "config", this._config);
 		ui.notifications.info(game.i18n.format("CRITICAL_SOUNDTRACK.Saved", { name: this.actor.name }));
+		this.close();
 	}
 }
 
@@ -308,6 +288,7 @@ Hooks.on("createChatMessage", async (message) => {
 	await playCriticalSoundtrack(actor);
 });
 
+// V1 sheets (Foundry v11/v12 e sistemas legados)
 Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) => {
 	if (!game.user.isGM && !sheet.actor.isOwner) return;
 
@@ -317,4 +298,27 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) => {
 		icon: "fas fa-music",
 		onclick: () => new SoundtrackConfigApp(sheet.actor).render(true),
 	});
+});
+
+// V2 sheets (Foundry v13 + D&D5e v4+): injeta o botão diretamente no header
+Hooks.on("renderActorSheet", (app, html) => {
+	if (!game.user.isGM && !app.actor?.isOwner) return;
+
+
+	const appEl = app.element instanceof HTMLElement ? app.element : app.element?.[0];
+	if (!appEl) return;
+
+	// Evita duplicatas (caso getActorSheetHeaderButtons já tenha adicionado)
+	if (appEl.querySelector(".critical-soundtrack-config-btn")) return;
+
+	const header = appEl.querySelector(".window-header");
+	if (!header) return;
+
+	const btn = document.createElement("button");
+	btn.type = "button";
+	btn.className = "critical-soundtrack-config-btn header-button";
+	btn.title = game.i18n.localize("CRITICAL_SOUNDTRACK.ConfigButton");
+	btn.innerHTML = `<i class="fas fa-music"></i> ${game.i18n.localize("CRITICAL_SOUNDTRACK.ConfigButton")}`;
+	btn.addEventListener("click", () => new SoundtrackConfigApp(app.actor).render(true));
+	header.append(btn);
 });

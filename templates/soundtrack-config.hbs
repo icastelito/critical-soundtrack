@@ -73,6 +73,7 @@
 								<button
 									type="button"
 									class="cs-browse-file"
+									data-action="browseFile"
 									data-index="{{_index}}"
 									title="{{localize 'CRITICAL_SOUNDTRACK.Browse'}}"
 								>
@@ -101,6 +102,7 @@
 						<button
 							type="button"
 							class="cs-test-play"
+							data-action="testPlay"
 							data-index="{{_index}}"
 							title="{{localize 'CRITICAL_SOUNDTRACK.TestPlay'}}"
 						>
@@ -109,6 +111,7 @@
 						<button
 							type="button"
 							class="cs-remove-track"
+							data-action="removeTrack"
 							data-index="{{_index}}"
 							title="{{localize 'CRITICAL_SOUNDTRACK.RemoveTrack'}}"
 						>
@@ -126,7 +129,7 @@
 			{{/unless}}
 		</div>
 
-		<button type="button" class="cs-add-track">
+		<button type="button" class="cs-add-track" data-action="addTrack">
 			<i class="fas fa-plus"></i>
 			{{localize "CRITICAL_SOUNDTRACK.AddTrack"}}
 		</button>
@@ -134,7 +137,7 @@
 
 	<!-- Botões de ação -->
 	<div class="cs-footer">
-		<button type="submit" class="cs-btn-save">
+		<button type="button" class="cs-btn-save" data-action="save">
 			<i class="fas fa-save"></i>
 			{{localize "CRITICAL_SOUNDTRACK.Save"}}
 		</button>
