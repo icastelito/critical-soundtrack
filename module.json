@@ -10,8 +10,7 @@
 	],
 	"compatibility": {
 		"minimum": "11",
-		"verified": "12",
-		"maximum": "12"
+		"verified": "13"
 	},
 	"esmodules": [],
 	"scripts": ["scripts/main.js"],
@@ -27,6 +26,5 @@
 			"name": "Português (Brasil)",
 			"path": "lang/pt-BR.json"
 		}
-	],
-	"flags": {}
+	]
 }
