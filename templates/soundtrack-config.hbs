@@ -1,0 +1,143 @@
+<form class="critical-soundtrack-config">
+
+	<!-- Cabeçalho -->
+	<div class="cs-header">
+		<i class="fas fa-music cs-icon-header"></i>
+		<h2>{{actorName}}</h2>
+		<p class="cs-subtitle">{{localize "CRITICAL_SOUNDTRACK.ConfigSubtitle"}}</p>
+	</div>
+
+	<!-- Configurações gerais -->
+	<fieldset class="cs-fieldset">
+		<legend>{{localize "CRITICAL_SOUNDTRACK.GeneralSettings"}}</legend>
+
+		<div class="form-group">
+			<label>{{localize "CRITICAL_SOUNDTRACK.PlayMode"}}</label>
+			<div class="form-fields">
+				<select name="playMode">
+					{{selectOptions playModes selected=playMode labelAttr="label" valueAttr="value"}}
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label>{{localize "CRITICAL_SOUNDTRACK.DefaultVolume"}}</label>
+			<div class="form-fields cs-range-group">
+				<input type="range" name="volume" value="{{volume}}" min="0" max="1" step="0.05" />
+				<span class="cs-range-value">{{volume}}</span>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="cs-duration">{{localize "CRITICAL_SOUNDTRACK.Duration"}}</label>
+			<div class="form-fields">
+				<input id="cs-duration" type="number" name="duration" value="{{duration}}" min="0" step="1" />
+				<p class="hint">{{localize "CRITICAL_SOUNDTRACK.DurationHint"}}</p>
+			</div>
+		</div>
+	</fieldset>
+
+	<!-- Lista de faixas -->
+	<fieldset class="cs-fieldset">
+		<legend>{{localize "CRITICAL_SOUNDTRACK.Tracks"}}</legend>
+
+		<div class="cs-tracks-list">
+			{{#each tracks}}
+				<div class="cs-track-item">
+					<div class="cs-track-number">
+						<span>#{{_number}}</span>
+					</div>
+
+					<div class="cs-track-fields">
+						<div class="form-group">
+							<label>{{localize "CRITICAL_SOUNDTRACK.TrackLabel"}}</label>
+							<div class="form-fields">
+								<input
+									type="text"
+									name="track-label-{{_index}}"
+									value="{{label}}"
+									placeholder="{{localize 'CRITICAL_SOUNDTRACK.TrackLabelPlaceholder'}}"
+								/>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>{{localize "CRITICAL_SOUNDTRACK.TrackFile"}}</label>
+							<div class="form-fields cs-file-group">
+								<input
+									type="text"
+									name="track-src-{{_index}}"
+									value="{{src}}"
+									placeholder="{{localize 'CRITICAL_SOUNDTRACK.TrackFilePlaceholder'}}"
+								/>
+								<button
+									type="button"
+									class="cs-browse-file"
+									data-index="{{_index}}"
+									title="{{localize 'CRITICAL_SOUNDTRACK.Browse'}}"
+								>
+									<i class="fas fa-folder-open"></i>
+								</button>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>{{localize "CRITICAL_SOUNDTRACK.TrackVolume"}}</label>
+							<div class="form-fields cs-range-group">
+								<input
+									type="range"
+									name="track-volume-{{_index}}"
+									value="{{volume}}"
+									min="0"
+									max="1"
+									step="0.05"
+								/>
+								<span class="cs-range-value">{{volume}}</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="cs-track-actions">
+						<button
+							type="button"
+							class="cs-test-play"
+							data-index="{{_index}}"
+							title="{{localize 'CRITICAL_SOUNDTRACK.TestPlay'}}"
+						>
+							<i class="fas fa-play"></i>
+						</button>
+						<button
+							type="button"
+							class="cs-remove-track"
+							data-index="{{_index}}"
+							title="{{localize 'CRITICAL_SOUNDTRACK.RemoveTrack'}}"
+						>
+							<i class="fas fa-trash"></i>
+						</button>
+					</div>
+				</div>
+			{{/each}}
+
+			{{#unless tracks.length}}
+				<p class="cs-no-tracks">
+					<i class="fas fa-info-circle"></i>
+					{{localize "CRITICAL_SOUNDTRACK.NoTracks"}}
+				</p>
+			{{/unless}}
+		</div>
+
+		<button type="button" class="cs-add-track">
+			<i class="fas fa-plus"></i>
+			{{localize "CRITICAL_SOUNDTRACK.AddTrack"}}
+		</button>
+	</fieldset>
+
+	<!-- Botões de ação -->
+	<div class="cs-footer">
+		<button type="submit" class="cs-btn-save">
+			<i class="fas fa-save"></i>
+			{{localize "CRITICAL_SOUNDTRACK.Save"}}
+		</button>
+	</div>
+
+</form>

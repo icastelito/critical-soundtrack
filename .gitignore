@@ -1,0 +1,25 @@
+# Documentação (não versionada)
+*.md
+
+# Dependências / ferramentas locais
+node_modules/
+.pnp.*
+.yarn/
+
+# Outputs de build
+dist/
+build/
+
+# Ambiente
+.env
+.env.local
+
+# Editores
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db

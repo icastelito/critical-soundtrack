@@ -1,0 +1,32 @@
+{
+	"id": "critical-soundtrack",
+	"title": "Critical Soundtrack",
+	"description": "Toca a trilha sonora pessoal de um personagem quando ele realiza um acerto crítico. Compatível com D&D 5e, PF2e e outros sistemas.",
+	"version": "1.0.0",
+	"authors": [
+		{
+			"name": "Usuário"
+		}
+	],
+	"compatibility": {
+		"minimum": "11",
+		"verified": "12",
+		"maximum": "12"
+	},
+	"esmodules": [],
+	"scripts": ["scripts/main.js"],
+	"styles": ["styles/main.css"],
+	"languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json"
+		},
+		{
+			"lang": "pt-BR",
+			"name": "Português (Brasil)",
+			"path": "lang/pt-BR.json"
+		}
+	],
+	"flags": {}
+}

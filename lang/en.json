@@ -1,0 +1,39 @@
+{
+  "CRITICAL_SOUNDTRACK.ConfigTitle": "Critical Soundtrack — Configuration",
+  "CRITICAL_SOUNDTRACK.ConfigSubtitle": "Configure the soundtrack that plays on a critical hit",
+  "CRITICAL_SOUNDTRACK.ConfigButton": "Critical Soundtrack",
+
+  "CRITICAL_SOUNDTRACK.GeneralSettings": "General Settings",
+  "CRITICAL_SOUNDTRACK.PlayMode": "Play Mode",
+  "CRITICAL_SOUNDTRACK.PlayModeRandom": "Random",
+  "CRITICAL_SOUNDTRACK.PlayModeSequential": "Sequential",
+  "CRITICAL_SOUNDTRACK.DefaultVolume": "Default Volume",
+  "CRITICAL_SOUNDTRACK.Duration": "Duration (seconds)",
+  "CRITICAL_SOUNDTRACK.DurationHint": "0 = play the full track",
+
+  "CRITICAL_SOUNDTRACK.Tracks": "Tracks",
+  "CRITICAL_SOUNDTRACK.TrackLabel": "Name",
+  "CRITICAL_SOUNDTRACK.TrackLabelPlaceholder": "Track name (optional)",
+  "CRITICAL_SOUNDTRACK.TrackFile": "Audio File",
+  "CRITICAL_SOUNDTRACK.TrackFilePlaceholder": "Path to audio file…",
+  "CRITICAL_SOUNDTRACK.TrackVolume": "Volume",
+  "CRITICAL_SOUNDTRACK.Browse": "Browse",
+  "CRITICAL_SOUNDTRACK.TestPlay": "Test",
+  "CRITICAL_SOUNDTRACK.AddTrack": "Add Track",
+  "CRITICAL_SOUNDTRACK.RemoveTrack": "Remove",
+  "CRITICAL_SOUNDTRACK.NoTracks": "No tracks configured. Click "Add Track" to begin.",
+
+  "CRITICAL_SOUNDTRACK.Save": "Save",
+  "CRITICAL_SOUNDTRACK.Saved": "{name}'s soundtrack saved successfully!",
+  "CRITICAL_SOUNDTRACK.NoTrackSelected": "Select an audio file first.",
+  "CRITICAL_SOUNDTRACK.AudioError": "Critical Soundtrack: failed to play audio. Check the file path and console for details.",
+  "CRITICAL_SOUNDTRACK.NowPlaying": "🎵 {name} — Critical Hit! ({track})",
+  "CRITICAL_SOUNDTRACK.NoTracksWarning": "{name} has no soundtrack configured.",
+
+  "CRITICAL_SOUNDTRACK.SettingEnabled": "Enable Critical Soundtrack",
+  "CRITICAL_SOUNDTRACK.SettingEnabledHint": "Enable or disable the module without removing its configuration.",
+  "CRITICAL_SOUNDTRACK.SettingOnlyPCs": "Only Player Characters",
+  "CRITICAL_SOUNDTRACK.SettingOnlyPCsHint": "When enabled, soundtracks only play for player characters (type = character).",
+  "CRITICAL_SOUNDTRACK.SettingShowWarnings": "Show 'No Tracks' Warning",
+  "CRITICAL_SOUNDTRACK.SettingShowWarningsHint": "Show a notification when a critical hit happens but the character has no configured soundtrack."
+}
