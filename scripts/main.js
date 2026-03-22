@@ -121,10 +121,9 @@ async function openAssignDialog(playlistId) {
 			content,
 			ok: {
 				label: game.i18n.localize("CRITICAL_SOUNDTRACK.Assign"),
-				// v13: callback recebe (event, button, dialog) onde dialog é o HTMLDialogElement
-				callback: async (_event, button, dialog) => {
-					const root = dialog ?? button.closest("dialog") ?? button.form;
-					const actorId = root?.querySelector("select[name=actorId]")?.value;
+				// v13: button é HTMLButtonElement; sobe até o <dialog> para acessar o form
+				callback: async (_event, button) => {
+					const actorId = button.closest("dialog")?.querySelector("select[name=actorId]")?.value;
 					if (!actorId) {
 						console.error(`[${MODULE_ID}] actorId não encontrado no diálogo`, { button, dialog });
 						return;
