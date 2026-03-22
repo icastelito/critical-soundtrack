@@ -146,10 +146,16 @@ async function openAssignDialog(playlistId) {
 	}
 }
 
-function getPlaylistId(li) {
-	console.log(`[${MODULE_ID}] getPlaylistId — dataset:`, li?.dataset, "| li:", li);
-	if (li instanceof HTMLElement) return li.dataset.documentId ?? li.dataset.playlistId ?? li.dataset.entryId;
-	return li.data?.("documentId") ?? li[0]?.dataset?.documentId;
+function getPlaylistId(el) {
+	// Em v13 o elemento passado é o <header> interno — sobe até encontrar data-document-id
+	let node = el instanceof HTMLElement ? el : el[0];
+	while (node) {
+		const id = node.dataset?.documentId ?? node.dataset?.entryId ?? node.dataset?.playlistId;
+		if (id) return id;
+		node = node.parentElement;
+	}
+	console.warn(`[${MODULE_ID}] getPlaylistId — data-document-id não encontrado em:`, el);
+	return null;
 }
 
 Hooks.once("init", () => {
