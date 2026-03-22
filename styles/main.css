@@ -1,10 +1,4 @@
-/* Critical Soundtrack — sem interface própria; estilos reservados para uso futuro */
-
-.critical-soundtrack-config .cs-btn-save {
-	cursor: pointer;
-	padding: 4px 16px;
-}
-
+/* Critical Soundtrack */
 /* ── Botão na ficha do personagem (V1 e V2) ─────────────── */
 .window-app .header-button.critical-soundtrack-config-btn {
 	color: var(--color-text-hyperlink, #4a7c59);

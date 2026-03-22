@@ -79,14 +79,7 @@ async function playCriticalSoundtrack(actor) {
 }
 
 async function openAssignDialog(playlistId) {
-	console.log(`[${MODULE_ID}] openAssignDialog — playlistId:`, playlistId);
-
 	const playlist = game.playlists.get(playlistId);
-	if (!playlist) {
-		console.error(`[${MODULE_ID}] openAssignDialog — playlist NÃO encontrada para id:`, playlistId);
-		return;
-	}
-	console.log(`[${MODULE_ID}] openAssignDialog — playlist encontrada:`, playlist.name);
 	if (!playlist) return;
 
 	const actors = game.actors.contents
@@ -112,22 +105,15 @@ async function openAssignDialog(playlistId) {
 		</div>
 		<p class="hint">${game.i18n.format("CRITICAL_SOUNDTRACK.AssignHint", { playlist: playlist.name })}</p>`;
 
-	console.log(`[${MODULE_ID}] ${actors.length} atores encontrados, abrindo DialogV2...`);
-	console.log(`[${MODULE_ID}] foundry.applications.api.DialogV2:`, foundry.applications?.api?.DialogV2);
-
 	try {
 		await foundry.applications.api.DialogV2.prompt({
 			window: { title: game.i18n.localize("CRITICAL_SOUNDTRACK.AssignTitle") },
 			content,
 			ok: {
 				label: game.i18n.localize("CRITICAL_SOUNDTRACK.Assign"),
-				// v13: button é HTMLButtonElement; sobe até o <dialog> para acessar o form
 				callback: async (_event, button) => {
 					const actorId = button.closest("dialog")?.querySelector("select[name=actorId]")?.value;
-					if (!actorId) {
-						console.error(`[${MODULE_ID}] actorId não encontrado no diálogo`, { button, dialog });
-						return;
-					}
+					if (!actorId) return;
 					const actor = game.actors.get(actorId);
 					if (!actor) return;
 					await actor.setFlag(MODULE_ID, "playlistId", playlistId);
@@ -141,25 +127,21 @@ async function openAssignDialog(playlistId) {
 			},
 		});
 	} catch (err) {
-		console.error(`[${MODULE_ID}] Erro ao abrir diálogo de atribuição:`, err);
+		console.error(`[${MODULE_ID}]`, err);
 	}
 }
 
 function getPlaylistId(el) {
-	// Em v13 o elemento passado é o <header> interno — sobe até encontrar data-document-id
 	let node = el instanceof HTMLElement ? el : el[0];
 	while (node) {
 		const id = node.dataset?.documentId ?? node.dataset?.entryId ?? node.dataset?.playlistId;
 		if (id) return id;
 		node = node.parentElement;
 	}
-	console.warn(`[${MODULE_ID}] getPlaylistId — data-document-id não encontrado em:`, el);
 	return null;
 }
 
 Hooks.once("init", () => {
-	console.log(`[${MODULE_ID}] init — módulo carregado`);
-
 	game.settings.register(MODULE_ID, "enabled", {
 		name: "CRITICAL_SOUNDTRACK.SettingEnabled",
 		hint: "CRITICAL_SOUNDTRACK.SettingEnabledHint",
@@ -202,19 +184,15 @@ Hooks.on("createChatMessage", async (message) => {
 	await playCriticalSoundtrack(actor);
 });
 
-// Patch no "setup" — roda ANTES do sidebar renderizar, garantindo que as opções
+// Patch no "setup" — roda antes do sidebar renderizar, garantindo que as opções
 // já estejam no prototype quando o ContextMenu é criado pela primeira vez.
 Hooks.once("setup", () => {
-	const Cls = CONFIG.ui?.playlists;
-	const proto = Cls?.prototype;
-	if (typeof proto?._getEntryContextOptions !== "function") {
-		console.warn(`[${MODULE_ID}] setup: _getEntryContextOptions não encontrado em CONFIG.ui.playlists`);
-		return;
-	}
+	const proto = CONFIG.ui?.playlists?.prototype;
+	if (typeof proto?._getEntryContextOptions !== "function") return;
 
-	const origFn = proto._getEntryContextOptions;
+	const _orig = proto._getEntryContextOptions;
 	proto._getEntryContextOptions = function () {
-		const opts = origFn.call(this);
+		const opts = _orig.call(this);
 		if (!game.user?.isGM || !Array.isArray(opts)) return opts;
 
 		opts.push({
@@ -243,17 +221,13 @@ Hooks.once("setup", () => {
 
 		return opts;
 	};
-	console.log(`[${MODULE_ID}] setup: patch aplicado em PlaylistDirectory._getEntryContextOptions`);
 });
 
-// No "ready", força o rebuild do ContextMenu caso o sidebar já tenha renderizado.
+// Se o sidebar já renderizou antes do patch, força a recriação do ContextMenu.
 Hooks.once("ready", () => {
 	try {
-		if (typeof ui.playlists?._createContextMenus === "function") {
-			ui.playlists._createContextMenus();
-			console.log(`[${MODULE_ID}] ready: ContextMenu recriado`);
-		}
+		ui.playlists?._createContextMenus?.();
 	} catch (e) {
-		console.warn(`[${MODULE_ID}] ready: erro ao recriar ContextMenu:`, e);
+		console.warn(`[${MODULE_ID}]`, e);
 	}
 });
