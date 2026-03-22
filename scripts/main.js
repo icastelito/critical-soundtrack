@@ -173,7 +173,8 @@ class SoundtrackConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		this.element.querySelectorAll("input[type=range]").forEach((el) => {
 			el.addEventListener("input", (ev) => {
 				const group = ev.currentTarget.closest(".cs-range-group");
-				if (group) group.querySelector(".cs-range-value").textContent = parseFloat(ev.currentTarget.value).toFixed(2);
+				if (group)
+					group.querySelector(".cs-range-value").textContent = parseFloat(ev.currentTarget.value).toFixed(2);
 			});
 		});
 	}
@@ -300,15 +301,18 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) => {
 	});
 });
 
-// V2 sheets (Foundry v13 + D&D5e v4+): injeta o botão diretamente no header
-Hooks.on("renderActorSheet", (app, html) => {
-	if (!game.user.isGM && !app.actor?.isOwner) return;
-
+// V2 sheets (Foundry v13): hook genérico de ApplicationV2
+// "renderActorSheet" NÃO dispara para apps AppV2; usa-se "renderApplication"
+Hooks.on("renderApplication", (app) => {
+	// Filtra apenas janelas de fichas de atores
+	const actor = app.document instanceof Actor ? app.document : null;
+	if (!actor) return;
+	if (!game.user.isGM && !actor.isOwner) return;
 
 	const appEl = app.element instanceof HTMLElement ? app.element : app.element?.[0];
 	if (!appEl) return;
 
-	// Evita duplicatas (caso getActorSheetHeaderButtons já tenha adicionado)
+	// Evita duplicata (sheets legados já recebem o botão via getActorSheetHeaderButtons)
 	if (appEl.querySelector(".critical-soundtrack-config-btn")) return;
 
 	const header = appEl.querySelector(".window-header");
@@ -316,9 +320,9 @@ Hooks.on("renderActorSheet", (app, html) => {
 
 	const btn = document.createElement("button");
 	btn.type = "button";
-	btn.className = "critical-soundtrack-config-btn header-button";
+	btn.className = "critical-soundtrack-config-btn";
 	btn.title = game.i18n.localize("CRITICAL_SOUNDTRACK.ConfigButton");
-	btn.innerHTML = `<i class="fas fa-music"></i> ${game.i18n.localize("CRITICAL_SOUNDTRACK.ConfigButton")}`;
-	btn.addEventListener("click", () => new SoundtrackConfigApp(app.actor).render(true));
+	btn.innerHTML = `<i class="fas fa-music"></i>`;
+	btn.addEventListener("click", () => new SoundtrackConfigApp(actor).render(true));
 	header.append(btn);
 });
