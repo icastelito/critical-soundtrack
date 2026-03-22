@@ -79,7 +79,14 @@ async function playCriticalSoundtrack(actor) {
 }
 
 async function openAssignDialog(playlistId) {
+	console.log(`[${MODULE_ID}] openAssignDialog — playlistId:`, playlistId);
+
 	const playlist = game.playlists.get(playlistId);
+	if (!playlist) {
+		console.error(`[${MODULE_ID}] openAssignDialog — playlist NÃO encontrada para id:`, playlistId);
+		return;
+	}
+	console.log(`[${MODULE_ID}] openAssignDialog — playlist encontrada:`, playlist.name);
 	if (!playlist) return;
 
 	const actors = game.actors.contents
@@ -104,6 +111,9 @@ async function openAssignDialog(playlistId) {
 			<select name="actorId">${options}</select>
 		</div>
 		<p class="hint">${game.i18n.format("CRITICAL_SOUNDTRACK.AssignHint", { playlist: playlist.name })}</p>`;
+
+	console.log(`[${MODULE_ID}] ${actors.length} atores encontrados, abrindo DialogV2...`);
+	console.log(`[${MODULE_ID}] foundry.applications.api.DialogV2:`, foundry.applications?.api?.DialogV2);
 
 	try {
 		await foundry.applications.api.DialogV2.prompt({
@@ -137,7 +147,8 @@ async function openAssignDialog(playlistId) {
 }
 
 function getPlaylistId(li) {
-	if (li instanceof HTMLElement) return li.dataset.documentId;
+	console.log(`[${MODULE_ID}] getPlaylistId — dataset:`, li?.dataset, "| li:", li);
+	if (li instanceof HTMLElement) return li.dataset.documentId ?? li.dataset.playlistId ?? li.dataset.entryId;
 	return li.data?.("documentId") ?? li[0]?.dataset?.documentId;
 }
 
