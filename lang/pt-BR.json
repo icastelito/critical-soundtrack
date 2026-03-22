@@ -1,39 +1,21 @@
-{
-	"CRITICAL_SOUNDTRACK.ConfigTitle": "Trilha Sonora Crítica — Configuração",
-	"CRITICAL_SOUNDTRACK.ConfigSubtitle": "Configure a trilha sonora que toca ao realizar um acerto crítico",
-	"CRITICAL_SOUNDTRACK.ConfigButton": "Trilha Crítica",
-
-	"CRITICAL_SOUNDTRACK.GeneralSettings": "Configurações Gerais",
-	"CRITICAL_SOUNDTRACK.PlayMode": "Modo de Reprodução",
-	"CRITICAL_SOUNDTRACK.PlayModeRandom": "Aleatório",
-	"CRITICAL_SOUNDTRACK.PlayModeSequential": "Sequencial",
-	"CRITICAL_SOUNDTRACK.DefaultVolume": "Volume Padrão",
-	"CRITICAL_SOUNDTRACK.Duration": "Duração (segundos)",
-	"CRITICAL_SOUNDTRACK.DurationHint": "0 = tocar a faixa completa",
-
-	"CRITICAL_SOUNDTRACK.Tracks": "Faixas",
-	"CRITICAL_SOUNDTRACK.TrackLabel": "Nome",
-	"CRITICAL_SOUNDTRACK.TrackLabelPlaceholder": "Nome da faixa (opcional)",
-	"CRITICAL_SOUNDTRACK.TrackFile": "Arquivo de Áudio",
-	"CRITICAL_SOUNDTRACK.TrackFilePlaceholder": "Caminho do arquivo de áudio…",
-	"CRITICAL_SOUNDTRACK.TrackVolume": "Volume",
-	"CRITICAL_SOUNDTRACK.Browse": "Navegar",
-	"CRITICAL_SOUNDTRACK.TestPlay": "Testar",
-	"CRITICAL_SOUNDTRACK.AddTrack": "Adicionar Faixa",
-	"CRITICAL_SOUNDTRACK.RemoveTrack": "Remover",
-	"CRITICAL_SOUNDTRACK.NoTracks": "Nenhuma faixa configurada. Clique em 'Adicionar Faixa' para começar.",
-
-	"CRITICAL_SOUNDTRACK.Save": "Salvar",
-	"CRITICAL_SOUNDTRACK.Saved": "Trilha sonora de {name} salva com sucesso!",
-	"CRITICAL_SOUNDTRACK.NoTrackSelected": "Selecione um arquivo de áudio primeiro.",
-	"CRITICAL_SOUNDTRACK.AudioError": "Trilha Crítica: erro ao reproduzir áudio. Verifique o caminho do arquivo e o console.",
+﻿{
 	"CRITICAL_SOUNDTRACK.NowPlaying": "🎵 {name} — Acerto Crítico! ({track})",
-	"CRITICAL_SOUNDTRACK.NoTracksWarning": "{name} não possui trilha sonora configurada.",
 
-	"CRITICAL_SOUNDTRACK.SettingEnabled": "Ativar Trilha Sonora Crítica",
+	"CRITICAL_SOUNDTRACK.AssignToActor": "Definir como Trilha Crítica…",
+	"CRITICAL_SOUNDTRACK.ClearAssignment": "Remover Atribuição de Trilha Crítica",
+	"CRITICAL_SOUNDTRACK.AssignTitle": "Atribuir Trilha Crítica",
+	"CRITICAL_SOUNDTRACK.SelectActor": "Personagem",
+	"CRITICAL_SOUNDTRACK.AssignHint": "A playlist \"{playlist}\" tocará quando este personagem realizar um acerto crítico.",
+	"CRITICAL_SOUNDTRACK.Assign": "Atribuir",
+	"CRITICAL_SOUNDTRACK.Assigned": "Playlist \"{playlist}\" atribuída a {actor}.",
+	"CRITICAL_SOUNDTRACK.AssignmentCleared": "Atribuição de trilha crítica removida de \"{playlist}\".",
+	"CRITICAL_SOUNDTRACK.NoActors": "Nenhum personagem encontrado neste mundo.",
+	"CRITICAL_SOUNDTRACK.NoPlaylistWarning": "{name} não possui playlist de trilha crítica atribuída.",
+
+	"CRITICAL_SOUNDTRACK.SettingEnabled": "Ativar Trilha Crítica",
 	"CRITICAL_SOUNDTRACK.SettingEnabledHint": "Ativa ou desativa o módulo sem remover as configurações.",
 	"CRITICAL_SOUNDTRACK.SettingOnlyPCs": "Apenas Personagens Jogadores",
 	"CRITICAL_SOUNDTRACK.SettingOnlyPCsHint": "Quando ativo, as trilhas tocam apenas para personagens jogadores (tipo = character).",
-	"CRITICAL_SOUNDTRACK.SettingShowWarnings": "Exibir Aviso de 'Sem Faixas'",
-	"CRITICAL_SOUNDTRACK.SettingShowWarningsHint": "Exibe uma notificação quando ocorre um crítico mas o personagem não tem trilha configurada."
+	"CRITICAL_SOUNDTRACK.SettingShowWarnings": "Exibir Aviso de Playlist Não Atribuída",
+	"CRITICAL_SOUNDTRACK.SettingShowWarningsHint": "Exibe uma notificação quando ocorre um crítico mas o personagem não tem playlist atribuída."
 }
