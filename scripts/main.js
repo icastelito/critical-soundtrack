@@ -132,6 +132,8 @@ function getPlaylistId(li) {
 }
 
 Hooks.once("init", () => {
+	console.log(`[${MODULE_ID}] init — módulo carregado`);
+
 	game.settings.register(MODULE_ID, "enabled", {
 		name: "CRITICAL_SOUNDTRACK.SettingEnabled",
 		hint: "CRITICAL_SOUNDTRACK.SettingEnabledHint",
@@ -174,8 +176,10 @@ Hooks.on("createChatMessage", async (message) => {
 	await playCriticalSoundtrack(actor);
 });
 
-// Menu de contexto nas entradas da barra lateral de Playlists
-Hooks.on("getPlaylistDirectoryEntryContext", (_html, options) => {
+// Em v13, o nome do hook depende do nome da classe da aplicação de playlists.
+// Registra em ambos os nomes possíveis para garantir compatibilidade.
+function addPlaylistContextEntries(_html, options) {
+	console.log(`[${MODULE_ID}] context menu hook disparou`, { isGM: game.user?.isGM });
 	if (!game.user.isGM) return;
 
 	options.push({
@@ -201,4 +205,18 @@ Hooks.on("getPlaylistDirectoryEntryContext", (_html, options) => {
 			ui.notifications.info(game.i18n.format("CRITICAL_SOUNDTRACK.AssignmentCleared", { playlist: name }));
 		},
 	});
+}
+
+// Registra o hook no "ready" para usar o nome real da classe (v13 pode ter mudado)
+Hooks.once("ready", () => {
+	const className = ui.playlists?.constructor?.name ?? "PlaylistDirectory";
+	console.log(`[${MODULE_ID}] Classe do sidebar de playlists: ${className}`);
+
+	// Registra o hook usando o nome real da classe
+	Hooks.on(`get${className}EntryContext`, addPlaylistContextEntries);
+
+	// Também registra o nome legado como fallback
+	if (className !== "PlaylistDirectory") {
+		Hooks.on("getPlaylistDirectoryEntryContext", addPlaylistContextEntries);
+	}
 });
