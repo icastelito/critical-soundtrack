@@ -105,25 +105,35 @@ async function openAssignDialog(playlistId) {
 		</div>
 		<p class="hint">${game.i18n.format("CRITICAL_SOUNDTRACK.AssignHint", { playlist: playlist.name })}</p>`;
 
-	await foundry.applications.api.DialogV2.prompt({
-		window: { title: game.i18n.localize("CRITICAL_SOUNDTRACK.AssignTitle") },
-		content,
-		ok: {
-			label: game.i18n.localize("CRITICAL_SOUNDTRACK.Assign"),
-			callback: async (_event, button) => {
-				const actorId = button.form.querySelector("select[name=actorId]").value;
-				const actor = game.actors.get(actorId);
-				if (!actor) return;
-				await actor.setFlag(MODULE_ID, "playlistId", playlistId);
-				ui.notifications.info(
-					game.i18n.format("CRITICAL_SOUNDTRACK.Assigned", {
-						actor: actor.name,
-						playlist: playlist.name,
-					}),
-				);
+	try {
+		await foundry.applications.api.DialogV2.prompt({
+			window: { title: game.i18n.localize("CRITICAL_SOUNDTRACK.AssignTitle") },
+			content,
+			ok: {
+				label: game.i18n.localize("CRITICAL_SOUNDTRACK.Assign"),
+				// v13: callback recebe (event, button, dialog) onde dialog é o HTMLDialogElement
+				callback: async (_event, button, dialog) => {
+					const root = dialog ?? button.closest("dialog") ?? button.form;
+					const actorId = root?.querySelector("select[name=actorId]")?.value;
+					if (!actorId) {
+						console.error(`[${MODULE_ID}] actorId não encontrado no diálogo`, { button, dialog });
+						return;
+					}
+					const actor = game.actors.get(actorId);
+					if (!actor) return;
+					await actor.setFlag(MODULE_ID, "playlistId", playlistId);
+					ui.notifications.info(
+						game.i18n.format("CRITICAL_SOUNDTRACK.Assigned", {
+							actor: actor.name,
+							playlist: playlist.name,
+						}),
+					);
+				},
 			},
-		},
-	});
+		});
+	} catch (err) {
+		console.error(`[${MODULE_ID}] Erro ao abrir diálogo de atribuição:`, err);
+	}
 }
 
 function getPlaylistId(li) {
